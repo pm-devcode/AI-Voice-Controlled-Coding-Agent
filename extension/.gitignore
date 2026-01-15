@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Production Build
+out/
+dist/
+
+# Testing
+.vscode-test/
+coverage/
+
+# Vs Code extension package
+*.vsix
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+

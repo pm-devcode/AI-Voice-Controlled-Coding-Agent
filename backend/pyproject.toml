@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vcca-backend"
+version = "0.1.0"
+description = "Backend for VCCA (Voice-Controlled Coding Agent)"
+authors = [
+    {name = "VCCA Team"}
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "websockets",
+    "pydantic",
+    "pydantic-ai",
+    "google-generativeai",
+    "faster-whisper",
+    "silero-vad",
+    "soundfile",
+    "numpy",
+]
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"

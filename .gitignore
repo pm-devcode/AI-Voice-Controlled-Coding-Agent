@@ -1,0 +1,42 @@
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+.venv/
+.env
+.vcca/
+
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# Node.js (extension)
+node_modules/
+extension/out/
+extension/dist/
+extension/extension.js
+extension/extension.js.map
+extension/.vscode-test/
+*.vsix
+*.log
+
+# Webview
+extension/src/webview/dist/
