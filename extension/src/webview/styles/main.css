@@ -1039,7 +1039,8 @@ header {
 
 .timeline-step {
     border: none;
-    margin: 1px 0;
+    margin: 0;
+    padding: 0;
     border-radius: 4px;
     background-color: var(--vscode-sideBar-background);
     overflow: hidden;
@@ -1056,26 +1057,28 @@ header {
 }
 
 .timeline-step.expanded {
-    margin-bottom: 12px;
+    margin-bottom: 2px;
 }
 
 .timeline-step-header {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
+    padding: 6px 0;
     background-color: var(--vscode-sideBarSectionHeader-background);
     cursor: pointer;
     user-select: none;
-    gap: 10px;
+    gap: 8px;
+    border-left: 2px solid transparent; 
 }
 
 .timeline-step-body {
-    padding: 10px 12px 10px 42px;
+    padding: 6px 12px;
     border-top: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.1));
     background-color: var(--vscode-editor-background);
     font-size: 0.9em;
     color: var(--vscode-descriptionForeground);
     line-height: 1.4;
+    border-left: 2px solid transparent;
 }
 
 .step-description-full {
@@ -1084,12 +1087,13 @@ header {
 
 .step-status-icon {
     width: 20px;
-    height: 20px;
+    height: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 0.9em;
     color: var(--vscode-descriptionForeground);
+    margin-left: 2px;
 }
 
 .spinner-dots {
@@ -1111,8 +1115,8 @@ header {
 }
 
 .step-title {
-    font-weight: 600;
-    font-size: 0.95em;
+    font-weight: 400;
+    font-size: 0.9em;
     color: var(--vscode-foreground);
 }
 
@@ -1128,26 +1132,24 @@ header {
 .step-toggle {
     font-size: 0.8em;
     color: var(--vscode-descriptionForeground);
-    padding: 0 4px;
+    padding: 0;
 }
 
 /* Tool Trace Items */
 .timeline-tool {
     display: flex;
     align-items: center;
-    padding: 2px 8px 2px 28px;
+    padding: 2px 0;
     font-family: var(--vscode-editor-font-family);
-    font-size: 0.8em;
+    font-size: 0.85em;
     color: var(--vscode-descriptionForeground);
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
-    min-height: 18px;
+    min-height: 20px;
+    border-left: 2px solid transparent; 
 }
 
-.tool-line {
-    display: none;
-}
-
+/* Tool Trace Items */
 .tool-status-icon {
     width: 14px;
     height: 14px;
@@ -1157,6 +1159,13 @@ header {
     font-size: 0.85em;
     color: var(--vscode-descriptionForeground);
 }
+
+.tool-line {
+    display: none;
+}
+
+/* Deprecated specific rules, merged above */
+/* .tool-status-icon { ... } */
 
 .spinner-dots.tiny {
     width: 10px;
@@ -1191,7 +1200,7 @@ header {
 
 .timeline-plan {
     border: none;
-    margin: 1px 0;
+    margin: 0;
     border-radius: 4px;
     background-color: var(--vscode-sideBar-background);
     overflow: hidden;
@@ -1203,15 +1212,19 @@ header {
     /* No border needed */
 }
 
+.timeline-plan.done {
+    opacity: 0.7;
+}
+
 .timeline-plan-header {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
+    padding: 6px 0;
     background-color: var(--vscode-sideBarSectionHeader-background);
     cursor: pointer;
     user-select: none;
-    gap: 10px;
-    font-weight: 600;
+    gap: 8px;
+    border-left: 2px solid transparent; 
 }
 
 .timeline-plan-header .plan-icon {

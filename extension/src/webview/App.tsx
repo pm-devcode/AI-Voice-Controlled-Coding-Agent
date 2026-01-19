@@ -136,12 +136,25 @@ const PlanContainerItem: React.FC<{ msg: ChatMessage, onToggle: () => void }> = 
     const { plan_data } = msg;
     if (!plan_data) return null;
 
+    const allDone = plan_data.steps && plan_data.steps.length > 0 && plan_data.steps.every((s: any) => s.status === 'done');
+    const anyFailed = plan_data.steps && plan_data.steps.some((s: any) => s.status === 'failed');
+    
+    // Always show checkmark for the "Plan Created" step itself, unless failed.
+    let icon = '✓';
+    if (anyFailed) icon = '✗';
+
+    // "Execution Plan" itself is an event that is done. Use .done class to dim it.
+    // The visual checkmark indicates the plan is set.
     return (
-        <div className={`timeline-plan ${plan_data.isCollapsed ? 'collapsed' : 'expanded'}`}>
+        <div className={`timeline-plan ${plan_data.isCollapsed ? 'collapsed' : 'expanded'} done ${anyFailed ? 'failed' : ''}`}>
             <div className='timeline-plan-header' onClick={onToggle}>
-                <span className='plan-icon'>📋</span>
-                <span className='plan-title'>Execution Plan</span>
-                <span className='plan-toggle'>{plan_data.isCollapsed ? '▼' : '▲'}</span>
+                <div className='step-status-icon'>
+                    {icon}
+                </div>
+                <div className='step-info'>
+                    <span className='step-title'>Execution Plan</span>
+                </div>
+                <span className='step-toggle'>{plan_data.isCollapsed ? '▼' : '▲'}</span>
             </div>
             {!plan_data.isCollapsed && (
                 <div className='timeline-plan-body'>
@@ -496,6 +509,17 @@ const App: React.FC = () => {
     const wsRef = useRef<WebSocketClient | null>(null);
     const connectionAttempted = useRef(false);
     const chatAreaRef = useRef<HTMLDivElement>(null);
+    const shouldAutoScrollRef = useRef(true);
+    const prevMessagesLengthRef = useRef(0);
+    const prevLastMessageTextLengthRef = useRef(0);
+
+    const handleScroll = () => {
+        if (chatAreaRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatAreaRef.current;
+            const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 50;
+            shouldAutoScrollRef.current = isAtBottom;
+        }
+    };
 
     // Timeline helpers refs
     const addToTimelineRef = useRef<(log: LogData, i_id?: string, s_id?: string) => void>(() => {});
@@ -599,7 +623,27 @@ const App: React.FC = () => {
 
     useEffect(() => {
         if (chatAreaRef.current && activeTab === 'chat') {
-            chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+            const currentLength = messages.length;
+            const lastMsg = messages[messages.length - 1];
+            const currentLastTextLength = lastMsg?.text?.length || 0;
+            
+            const isNewMessage = currentLength > prevMessagesLengthRef.current;
+            // Only care about text length increase if it is the same last message being updated (streaming)
+            // or a new message entirely.
+            const isStreaming = currentLength === prevMessagesLengthRef.current && 
+                                currentLastTextLength > prevLastMessageTextLengthRef.current;
+
+            // Update refs for next time
+            prevMessagesLengthRef.current = currentLength;
+            prevLastMessageTextLengthRef.current = currentLastTextLength;
+
+            if (shouldAutoScrollRef.current) {
+                // Only scroll if something "added" to the view (new msg or more text)
+                // This prevents scrolling when just toggling UI state like collapse/expand
+                if (isNewMessage || isStreaming) {
+                    chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+                }
+            }
         }
     }, [messages, activeTab]);
 
@@ -844,6 +888,7 @@ const App: React.FC = () => {
 
     const handleSend = () => {
         if (!inputValue.trim() || !wsRef.current) return;
+        shouldAutoScrollRef.current = true;
         setMessages(prev => [...prev, { role: 'user', text: inputValue, type: 'text' }]);
         wsRef.current.send({
             type: 'text_input',
@@ -930,7 +975,7 @@ const App: React.FC = () => {
             </header>
             
             {activeTab === 'chat' ? (
-                <div className='chat-area' ref={chatAreaRef}>
+                <div className='chat-area' ref={chatAreaRef} onScroll={handleScroll}>
                     {messages.length === 0 && <p className='welcome'>Speak or type a command to start coding.</p>}
                     
                     {messages.map((m, i) => {
